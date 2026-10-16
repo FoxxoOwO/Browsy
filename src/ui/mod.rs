@@ -104,11 +104,11 @@ impl BrowserUi {
                 .frame(Frame::new().fill(Color32::from_rgb(180, 83, 9)))
                 .show(ui, |ui| {
                     ui.horizontal(|ui| {
-                        ui.label(RichText::new("🚫 Pop-up Blocked:").strong().color(Color32::WHITE));
+                        ui.label(RichText::new("[!] Pop-up Blocked:").strong().color(Color32::WHITE));
                         ui.label(format!("Blocked window request to {}", notif.target_url));
 
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                            if ui.button("❌ Dismiss").clicked() {
+                            if ui.button("Dismiss").clicked() {
                                 popup_blocker.dismiss_notification(active_tab_id);
                             }
                             if ui.button("Always Allow for Site").clicked() {
@@ -173,15 +173,15 @@ impl BrowserUi {
                         frame.show(ui, |ui| {
                             ui.horizontal(|ui| {
                                 if tab.is_pinned {
-                                    ui.label("📌");
+                                    ui.label("[pin]");
                                 } else {
-                                    ui.label("🌐");
+                                    ui.label("[web]");
                                 }
 
                                 // Truncate title
                                 let title: String = tab.title.chars().take(18).collect();
                                 let title_text = if tab.is_loading {
-                                    format!("⏳ {}", title)
+                                    format!("~ {}", title)
                                 } else {
                                     title
                                 };
@@ -196,11 +196,11 @@ impl BrowserUi {
                                     ui.label(RichText::new(format!("{}", tab.blocked_ads)).size(10.0).color(Color32::from_rgb(56, 189, 248)));
                                 }
                                 if tab.detected_videos > 0 {
-                                    ui.label(RichText::new("🎬").size(10.0));
+                                    ui.label(RichText::new("[vid]").size(10.0));
                                 }
 
                                 // Close button
-                                if ui.small_button("×").clicked() {
+                                if ui.small_button("x").clicked() {
                                     tab_to_close = Some(tab.id);
                                 }
                             });
@@ -208,7 +208,7 @@ impl BrowserUi {
                     }
 
                     // '+' New Tab button
-                    if ui.button(" ➕ ").clicked() {
+                    if ui.button(" + ").clicked() {
                         tab_manager.new_tab("browsy://welcome");
                     }
                 });
@@ -216,7 +216,7 @@ impl BrowserUi {
 
             // Layout switcher button on the right
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if ui.button("📑 Vertical Tabs").on_hover_text("Switch to Vertical Tabs (Ctrl+Shift+V)").clicked() {
+                if ui.button("Vertical Tabs").on_hover_text("Switch to Vertical Tabs (Ctrl+Shift+V)").clicked() {
                     tab_manager.toggle_layout();
                 }
             });
@@ -237,7 +237,7 @@ impl BrowserUi {
             ui.add_space(8.0);
             ui.heading(RichText::new("Browsy Tabs").size(15.0).strong().color(Color32::from_rgb(56, 189, 248)));
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if ui.button("📑 Horizontal").on_hover_text("Switch to Horizontal Tabs").clicked() {
+                if ui.button("Horizontal").on_hover_text("Switch to Horizontal Tabs").clicked() {
                     tab_manager.toggle_layout();
                 }
             });
@@ -246,7 +246,7 @@ impl BrowserUi {
         ui.add_space(6.0);
         ui.horizontal(|ui| {
             ui.add_space(8.0);
-            if ui.button("➕ New Tab").clicked() {
+            if ui.button("+ New Tab").clicked() {
                 tab_manager.new_tab("browsy://welcome");
             }
         });
@@ -273,9 +273,9 @@ impl BrowserUi {
                 frame.show(ui, |ui| {
                     ui.horizontal(|ui| {
                         if tab.is_pinned {
-                            ui.label("📌");
+                            ui.label("[pin]");
                         } else {
-                            ui.label("🌐");
+                            ui.label("[web]");
                         }
 
                         let title: String = tab.title.chars().take(22).collect();
@@ -285,11 +285,11 @@ impl BrowserUi {
                         }
 
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                            if ui.small_button("×").clicked() {
+                            if ui.small_button("x").clicked() {
                                 tab_to_close = Some(tab.id);
                             }
                             if tab.detected_videos > 0 {
-                                ui.label(RichText::new("🎬").size(11.0));
+                                ui.label(RichText::new("[vid]").size(11.0));
                             }
                             if tab.blocked_ads > 0 {
                                 ui.label(RichText::new(format!("{}", tab.blocked_ads)).size(10.0).color(Color32::from_rgb(56, 189, 248)));
@@ -324,7 +324,7 @@ impl BrowserUi {
 
             // Back button
             let can_back = tab_manager.active_tab().map(|t| t.can_go_back).unwrap_or(false);
-            if ui.add_enabled(can_back, egui::Button::new("⮜")).clicked() {
+            if ui.add_enabled(can_back, egui::Button::new("<")).clicked() {
                 if let Some(tab) = tab_manager.active_tab_mut() {
                     if let Some(url) = tab.go_back() {
                         self.omnibox_input = url.to_string();
@@ -335,7 +335,7 @@ impl BrowserUi {
 
             // Forward button
             let can_fwd = tab_manager.active_tab().map(|t| t.can_go_forward).unwrap_or(false);
-            if ui.add_enabled(can_fwd, egui::Button::new("⮞")).clicked() {
+            if ui.add_enabled(can_fwd, egui::Button::new(">")).clicked() {
                 if let Some(tab) = tab_manager.active_tab_mut() {
                     if let Some(url) = tab.go_forward() {
                         self.omnibox_input = url.to_string();
@@ -345,14 +345,14 @@ impl BrowserUi {
             }
 
             // Reload button
-            if ui.button("⟳").on_hover_text("Reload page").clicked() {
+            if ui.button("Reload").on_hover_text("Reload page").clicked() {
                 if let Some(tab) = tab_manager.active_tab() {
                     engine.prepare_page_content(&tab.url);
                 }
             }
 
             // Home button
-            if ui.button("🏠").on_hover_text("Open Welcome page").clicked() {
+            if ui.button("Home").on_hover_text("Open Welcome page").clicked() {
                 if let Some(tab) = tab_manager.active_tab_mut() {
                     tab.navigate("browsy://welcome");
                     self.omnibox_input = "browsy://welcome".to_string();
@@ -360,9 +360,9 @@ impl BrowserUi {
             }
 
             // Omnibox
-            ui.label("🔒");
+            ui.label("URL:");
             let omnibox_response = ui.add_sized(
-                [ui.available_width() - 250.0, 24.0],
+                [ui.available_width() - 320.0, 24.0],
                 egui::TextEdit::singleline(&mut self.omnibox_input).hint_text("Search or enter web address..."),
             );
 
@@ -389,9 +389,9 @@ impl BrowserUi {
 
             // 1. Adblock Shield button
             let shield_label = if blocked_count > 0 {
-                format!("🛡️ {}", blocked_count)
+                format!("Shield ({})", blocked_count)
             } else {
-                "🛡️".to_string()
+                "Shield".to_string()
             };
             if ui.button(shield_label).on_hover_text("uBlock Origin Shield Protection").clicked() {
                 self.modal_state.show_adblock = !self.modal_state.show_adblock;
@@ -399,21 +399,21 @@ impl BrowserUi {
 
             // 2. Video Downloader button
             let video_label = if streams_count > 0 {
-                format!("🎬 {}", streams_count)
+                format!("Videos ({})", streams_count)
             } else {
-                "🎬".to_string()
+                "Videos".to_string()
             };
             if ui.button(video_label).on_hover_text("Video & Stream Downloader").clicked() {
                 self.modal_state.show_video_downloader = !self.modal_state.show_video_downloader;
             }
 
             // 3. Text Expander button
-            if ui.button("⚡").on_hover_text("Text Expander Snippets").clicked() {
+            if ui.button("Expander").on_hover_text("Text Expander Snippets").clicked() {
                 self.modal_state.show_text_expander = !self.modal_state.show_text_expander;
             }
 
             // 4. WebExtensions button
-            if ui.button(format!("🧩 {}", ext_count)).on_hover_text("Firefox & Chrome Extensions").clicked() {
+            if ui.button(format!("Ext ({})", ext_count)).on_hover_text("Firefox & Chrome Extensions").clicked() {
                 self.modal_state.show_extensions = !self.modal_state.show_extensions;
             }
         });
@@ -442,28 +442,28 @@ impl BrowserUi {
                         match page_name {
                             "welcome" => self.render_welcome_cards(ui),
                             "adblock" => {
-                                ui.heading(RichText::new("🛡️ uBlock Origin Shield").size(24.0).color(Color32::from_rgb(56, 189, 248)));
+                                ui.heading(RichText::new("uBlock Origin Shield").size(24.0).color(Color32::from_rgb(56, 189, 248)));
                                 ui.label("Inspect active filter lists, cosmetic rules, and domain protections.");
                                 if ui.button("Open Adblock Control Panel").clicked() {
                                     self.modal_state.show_adblock = true;
                                 }
                             }
                             "extensions" => {
-                                ui.heading(RichText::new("🧩 Firefox & Chrome Extensions").size(24.0).color(Color32::from_rgb(56, 189, 248)));
+                                ui.heading(RichText::new("Firefox & Chrome Extensions").size(24.0).color(Color32::from_rgb(56, 189, 248)));
                                 ui.label("Manage installed WebExtensions.");
                                 if ui.button("Open Extensions Manager").clicked() {
                                     self.modal_state.show_extensions = true;
                                 }
                             }
                             "expander" => {
-                                ui.heading(RichText::new("⚡ Text Expander").size(24.0).color(Color32::from_rgb(56, 189, 248)));
+                                ui.heading(RichText::new("Text Expander").size(24.0).color(Color32::from_rgb(56, 189, 248)));
                                 ui.label("Manage snippet shortcuts and expansion rules.");
                                 if ui.button("Open Text Expander Manager").clicked() {
                                     self.modal_state.show_text_expander = true;
                                 }
                             }
                             "downloads" => {
-                                ui.heading(RichText::new("🎬 Video & Stream Downloads").size(24.0).color(Color32::from_rgb(56, 189, 248)));
+                                ui.heading(RichText::new("Video & Stream Downloads").size(24.0).color(Color32::from_rgb(56, 189, 248)));
                                 ui.label("View captured video streams and active chunked downloads.");
                                 if ui.button("Open Video Downloader Drawer").clicked() {
                                     self.modal_state.show_video_downloader = true;
@@ -480,7 +480,7 @@ impl BrowserUi {
             // Live Web Rendering Context
             ui.vertical_centered(|ui| {
                 ui.add_space(40.0);
-                ui.heading(RichText::new(format!("🌐 Loading: {}", active_tab.url)).size(20.0).color(Color32::from_rgb(56, 189, 248)));
+                ui.heading(RichText::new(format!("Loading: {}", active_tab.url)).size(20.0).color(Color32::from_rgb(56, 189, 248)));
                 ui.add_space(10.0);
                 ui.label(RichText::new("Servo Web Engine render surface").color(Color32::GRAY));
 
@@ -497,14 +497,14 @@ impl BrowserUi {
     }
 
     fn render_welcome_cards(&mut self, ui: &mut egui::Ui) {
-        ui.heading(RichText::new("🌐 Welcome to Browsy").size(32.0).strong().color(Color32::from_rgb(56, 189, 248)));
+        ui.heading(RichText::new("Welcome to Browsy").size(32.0).strong().color(Color32::from_rgb(56, 189, 248)));
         ui.label(RichText::new("Fast, private, customizable browser written in Rust on the Servo web engine.").size(16.0).color(Color32::LIGHT_GRAY));
         ui.add_space(16.0);
 
         ui.columns(3, |columns| {
             // Card 1
             columns[0].group(|ui| {
-                ui.heading(RichText::new("🛡️ uBlock Origin").size(16.0).color(Color32::from_rgb(56, 189, 248)));
+                ui.heading(RichText::new("uBlock Origin").size(16.0).color(Color32::from_rgb(56, 189, 248)));
                 ui.label("Integrated ad & tracker blocker with ABP syntax, EasyList, and cosmetic CSS hiding.");
                 if ui.button("Shield Panel").clicked() {
                     self.modal_state.show_adblock = true;
@@ -513,7 +513,7 @@ impl BrowserUi {
 
             // Card 2
             columns[1].group(|ui| {
-                ui.heading(RichText::new("🎬 Video Downloader").size(16.0).color(Color32::from_rgb(56, 189, 248)));
+                ui.heading(RichText::new("Video Downloader").size(16.0).color(Color32::from_rgb(56, 189, 248)));
                 ui.label("Automatically intercepts HLS (m3u8), DASH, and MP4 media with direct downloader.");
                 if ui.button("Downloader Drawer").clicked() {
                     self.modal_state.show_video_downloader = true;
@@ -522,7 +522,7 @@ impl BrowserUi {
 
             // Card 3
             columns[2].group(|ui| {
-                ui.heading(RichText::new("⚡ Text Expander").size(16.0).color(Color32::from_rgb(56, 189, 248)));
+                ui.heading(RichText::new("Text Expander").size(16.0).color(Color32::from_rgb(56, 189, 248)));
                 ui.label("Expands shortcuts like :email, :date, :time everywhere in web inputs.");
                 if ui.button("Snippets Manager").clicked() {
                     self.modal_state.show_text_expander = true;
@@ -534,7 +534,7 @@ impl BrowserUi {
         ui.columns(2, |columns| {
             // Card 4
             columns[0].group(|ui| {
-                ui.heading(RichText::new("🧩 Chrome & Firefox Extensions").size(16.0).color(Color32::from_rgb(56, 189, 248)));
+                ui.heading(RichText::new("Chrome & Firefox Extensions").size(16.0).color(Color32::from_rgb(56, 189, 248)));
                 ui.label("Supports Manifest V2 & V3 WebExtensions API (`chrome.*`, `browser.*`).");
                 if ui.button("Extensions Manager").clicked() {
                     self.modal_state.show_extensions = true;
@@ -543,7 +543,7 @@ impl BrowserUi {
 
             // Card 5
             columns[1].group(|ui| {
-                ui.heading(RichText::new("📑 Dual Tab Layouts").size(16.0).color(Color32::from_rgb(56, 189, 248)));
+                ui.heading(RichText::new("Dual Tab Layouts").size(16.0).color(Color32::from_rgb(56, 189, 248)));
                 ui.label("Switch anytime between Horizontal tabs and Vertical sidebar tree tabs (Ctrl+Shift+V).");
             });
         });

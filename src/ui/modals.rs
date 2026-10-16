@@ -35,7 +35,7 @@ pub fn show_adblock_modal(
         return;
     }
 
-    egui::Window::new("🛡️ uBlock Origin Shield")
+    egui::Window::new("uBlock Origin Shield")
         .open(&mut modal_state.show_adblock)
         .resizable(true)
         .default_width(550.0)
@@ -140,7 +140,7 @@ pub fn show_video_downloader_modal(
         return;
     }
 
-    egui::Window::new("🎬 Video & Stream Downloader")
+    egui::Window::new("Video & Stream Downloader")
         .open(&mut modal_state.show_video_downloader)
         .resizable(true)
         .default_width(620.0)
@@ -151,7 +151,7 @@ pub fn show_video_downloader_modal(
             ui.horizontal(|ui| {
                 ui.label(format!("Save folder: {}", downloader.download_dir().display()));
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    if ui.button("📁 Open Folder").clicked() {
+                    if ui.button("Open Folder").clicked() {
                         let _ = std::process::Command::new("explorer")
                             .arg(downloader.download_dir())
                             .spawn();
@@ -173,7 +173,7 @@ pub fn show_video_downloader_modal(
                 if current_page_url.starts_with("http") {
                     ui.add_space(8.0);
                     ui.horizontal(|ui| {
-                        if ui.button("⚡ Download Page Video with yt-dlp").clicked() {
+                        if ui.button("Download Page Video with yt-dlp").clicked() {
                             let _ = downloader.start_ytdlp_download(current_page_url, current_title);
                         }
                         if !ytdlp_available {
@@ -227,10 +227,10 @@ pub fn show_video_downloader_modal(
                                             ui.label(format!("{:.1}% ({:.0} kB/s)", percentage, speed_kbps));
                                         }
                                         DownloadState::Failed { error } => {
-                                            ui.label(RichText::new(format!("❌ Failed: {}", error)).color(Color32::RED));
+                                            ui.label(RichText::new(format!("Failed: {}", error)).color(Color32::RED));
                                         }
                                         DownloadState::Queued => {
-                                            ui.label("⏳ Queued");
+                                            ui.label("Queued");
                                         }
                                         DownloadState::Cancelled => {
                                             ui.label("Cancelled");
@@ -259,7 +259,7 @@ pub fn show_text_expander_modal(
         return;
     }
 
-    egui::Window::new("⚡ Text Expander Snippets")
+    egui::Window::new("Text Expander Snippets")
         .open(&mut modal_state.show_text_expander)
         .resizable(true)
         .default_width(650.0)
@@ -278,7 +278,7 @@ pub fn show_text_expander_modal(
                     ui.add(egui::TextEdit::singleline(&mut modal_state.new_snippet_replacement).desired_width(180.0).hint_text("text or {date}"));
                     ui.label("Description:");
                     ui.add(egui::TextEdit::singleline(&mut modal_state.new_snippet_desc).desired_width(120.0));
-                    if ui.button("➕ Add").clicked() {
+                    if ui.button("+ Add").clicked() {
                         if !modal_state.new_snippet_trigger.trim().is_empty() {
                             expander.add_snippet(
                                 &modal_state.new_snippet_trigger,
@@ -306,12 +306,12 @@ pub fn show_text_expander_modal(
                             expander.toggle_enabled(s.id);
                         }
                         ui.label(RichText::new(&s.trigger).strong().color(Color32::from_rgb(56, 189, 248)));
-                        ui.label("➔");
+                        ui.label("->");
                         ui.label(RichText::new(&s.replacement).color(Color32::WHITE));
                         ui.label(format!("({})", s.description));
 
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                            if ui.button("🗑").clicked() {
+                            if ui.button("Delete").clicked() {
                                 expander.remove_snippet(s.id);
                             }
                         });
@@ -320,7 +320,7 @@ pub fn show_text_expander_modal(
             });
 
             ui.separator();
-            ui.label(RichText::new("🧪 Test Snippets Here:").strong());
+            ui.label(RichText::new("Test Snippets Here:").strong());
             ui.horizontal(|ui| {
                 let edit = ui.add(
                     egui::TextEdit::singleline(&mut modal_state.expander_test_input)
@@ -348,7 +348,7 @@ pub fn show_extensions_modal(
         return;
     }
 
-    egui::Window::new("🧩 Firefox & Chrome WebExtensions")
+    egui::Window::new("Firefox & Chrome WebExtensions")
         .open(&mut modal_state.show_extensions)
         .resizable(true)
         .default_width(600.0)
@@ -361,7 +361,7 @@ pub fn show_extensions_modal(
             ui.horizontal(|ui| {
                 ui.label("Load Unpacked Extension:");
                 ui.add(egui::TextEdit::singleline(&mut modal_state.unpack_ext_path).desired_width(280.0).hint_text("Folder path containing manifest.json"));
-                if ui.button("📂 Load").clicked() && !modal_state.unpack_ext_path.trim().is_empty() {
+                if ui.button("Load").clicked() && !modal_state.unpack_ext_path.trim().is_empty() {
                     let path = std::path::PathBuf::from(&modal_state.unpack_ext_path);
                     match manager.load_unpacked(&path) {
                         Ok(id) => log::info!("Loaded extension: {}", id),
